@@ -1,0 +1,11 @@
+<h1>Qfilter</h1>
+<h6>An experimental Steem content filter</h6>
+
+<% @feed = @feed.sort_by{ |i| i['score'] }.reverse %>
+<% @feed.each do |x| %>
+  <p>
+    <%= x['score'] %> | <%= link_to x['title'], x['url'] %> | 
+    <%= x['author'] %>
+  </p>
+<% end %>
+
