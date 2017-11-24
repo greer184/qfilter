@@ -1,3 +1,27 @@
-// Place all the styles related to the Demo controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+html {
+  background-color: #2f4f4f;
+}
+
+body {
+  font-family: san-serif;
+}
+
+.header {
+  h1, h6 {
+    color: #ffffff;
+  }
+  border-bottom: 3px solid #00ff00;
+  text-align: center;
+}
+
+p { 
+  color: #ffffff;
+  a {
+    color: #00ff00;
+    text-decoration: none;
+    &:hover{
+      font-weight: bold;
+    }
+  }
+}
+

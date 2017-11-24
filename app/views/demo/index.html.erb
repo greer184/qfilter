@@ -1,5 +1,7 @@
-<h1>Qfilter</h1>
-<h6>An experimental Steem content filter</h6>
+<div class="header">
+  <h1>Qfilter</h1>
+  <h6>An experimental Steem content filter</h6>
+</div>
 
 <% @feed = @feed.sort_by{ |i| i['score'] }.reverse %>
 <% @feed.each do |x| %>
