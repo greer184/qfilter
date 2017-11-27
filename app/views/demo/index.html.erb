@@ -5,9 +5,15 @@
 
 <% @feed = @feed.sort_by{ |i| i['score'] }.reverse %>
 <% @feed.each do |x| %>
-  <p>
-    <%= x['score'] %> | <%= link_to x['title'], x['url'] %> | 
-    <%= x['author'] %>
-  </p>
+  <div class="post">
+    <div class="image">
+      <img src="<%= x['image'] %>">
+    </div>
+    <div class="content">
+      <p><%= link_to x['title'], x['url'] %></p>
+      <p><%= x['score'] %></p>
+      <p><%= x['author'] %></p>
+    </div>
+  </div>
 <% end %>
 

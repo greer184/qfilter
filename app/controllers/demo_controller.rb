@@ -13,6 +13,7 @@ class DemoController < ApplicationController
       info['url'] = "https://steemit.com" + content['result']['url']
       info['title'] = content['result']['root_title']
       info['author'] = content['result']['author']
+      info['image'] = JSON.parse(content['result']['json_metadata'])['image'][0]
 
       # Score Calculation
       total = 0   

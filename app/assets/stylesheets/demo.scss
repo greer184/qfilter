@@ -14,14 +14,34 @@ body {
   text-align: center;
 }
 
-p { 
-  color: #ffffff;
-  a {
-    color: #00ff00;
-    text-decoration: none;
-    &:hover{
-      font-weight: bold;
-    }
+.post {
+  border-bottom: 1px solid #00ff00;
+  height: 150px;
+}
+
+.image {
+  display: inline-block;
+  margin: 15px;
+  width: 25%;
+  img { 
+    height: 120px; 
+    width: 200px;  
   }
 }
 
+.content {
+  display: inline-block;
+  vertical-align: top;
+  margin: 15px 0px 0px 0px;
+  width: 60%;
+  p { 
+    color: #ffffff;
+    a {
+      color: #00ff00;
+      text-decoration: none;
+      &:hover{
+        font-weight: bold;
+      }
+    }
+  }
+}
