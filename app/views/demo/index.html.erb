@@ -7,7 +7,9 @@
 <% @feed.each do |x| %>
   <div class="post">
     <div class="image">
-      <img src="<%= x['image'] %>">
+      <% if !x['image'].nil? %>
+        <img src="<%= x['image'] %>">
+      <% end %>
     </div>
     <div class="content">
       <p><%= link_to x['title'], x['url'] %></p>
