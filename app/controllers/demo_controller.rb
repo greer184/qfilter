@@ -41,14 +41,18 @@ class DemoController < ApplicationController
       volatility = 0
       alpha = 0.1
       content['result']['active_votes'].sort_by{ |x| x['time'] }.each do |y|
-
+        weight = 0.0
         case calculation
         when 'stake'
           weight = y['weight'].to_f
         when 'reputation'
           weight = y['reputation'].to_f
         when 'contribution'
-          weight = 0
+          con = Contributor.find_by_username(y['voter'])
+          print con
+          if !con.nil?
+            weight += con.score
+          end
         end
 
         rating = (y['percent'] + 10000.0) / 2000
