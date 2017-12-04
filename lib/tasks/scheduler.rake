@@ -17,22 +17,30 @@ task :update => :environment do
   posts.each do |post|
     if (1.week.ago - post.created_at) > 0
       content = api.get_content(post.author, post.permlink)
-      content['result']['active_votes'].each do |x|
-        voter = x['voter']
-        if Contributor.where(username: voter).size == 0
-          Contributor.create(username: voter, score: 1).save
-        else
-	  con = Contributor.find_by_username(voter)
-          con.update_attribute(:score, con.score + 1)
-        end  
+      votes = content['result']['active_votes']
+
+      # Added to contribution score of voters
+      votes.each do |x|
+        Contributor.add_contribution(x['voter'], 1)
       end
-      if Contributor.where(username: post.author).size == 0
-        Contributor.create(username: post.author, score: 5).save
+      
+      # Find winners of curation and author rewards
+      curation_winner = post.compute_score('curation', votes)
+      score = post.compute_score('stake', votes)
+
+      # Reward only "quality" posts
+      if (score > 5.0)
+        score = (score - 5.0)**2
       else
-	con = Contributor.find_by_username(post.author)
-        con.update_attribute(:score, con.score + 5)
+        score = 0.0
       end
+      
+      # Add to the contribution score of author
+      Contributor.add_contribution(post.author, score.to_i)
+
+      # Remove post reference from database
       post.destroy 
+
     end   
   end
  
