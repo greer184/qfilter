@@ -3,12 +3,22 @@ task :update => :environment do
   state = api.get_state('/created/q-filter')
 
   state['result']['content'].each do |x|
+   
+    # Get specific information
     permlink = x[1]['permlink']
     author = x[1]['author']
-    if Post.where(permlink: permlink).size == 0
-      post = Post.create(author: author, permlink: permlink)
-      post.save
-    end    
+
+    # Enter author into the database if not there
+    Contributor.add_contribution(author, 0)
+
+    # Only store new posts where author contributes to ecosystem
+    if Contributor.find_by_username(author).score >= 0 
+      if Post.where(permlink: permlink).size == 0 
+        post = Post.create(author: author, permlink: permlink)
+        post.save
+      end
+    end  
+  
   end	
 
   posts = Post.all
@@ -28,15 +38,13 @@ task :update => :environment do
       curation_winner = post.compute_score('curation', votes)
       score = post.compute_score('stake', votes)
 
-      # Reward only "quality" posts
-      if (score > 5.0)
+      # Reward only "quality" posts, punish "bad" posts
+      if (score >= 5.0)
         score = (score - 5.0)**2
+        Contributor.add_contribution(post.author, score.to_i)
       else
-        score = 0.0
+        Contributor.add_contribution(post.author, -25)
       end
-      
-      # Add to the contribution score of author
-      Contributor.add_contribution(post.author, score.to_i)
 
       # Remove post reference from database
       post.destroy 
