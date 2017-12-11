@@ -1,0 +1,9 @@
+<div class="interior">
+  <h3>Top 20 Contributors</h3>
+  <% count = 1 %>
+  <% Contributor.find_best(20).each do |con| %>
+    <p><%= count %>. <%= con.username %>: <%= con.score - con.checkpoint %><p>
+    <% count += 1 %>
+  <% end %>
+</div>
+

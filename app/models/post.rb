@@ -41,7 +41,9 @@ class Post < ApplicationRecord
       when 'contribution'
         con = Contributor.find_by_username(y['voter'])
         if !con.nil?
-          weight += con.score
+          if con.score > 0
+            weight += con.score
+          end
         end
       when 'curation'
         alpha = (Math.exp(-2 * count / votes.size))
