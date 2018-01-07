@@ -10,6 +10,7 @@ class Post < ApplicationRecord
     info['url'] = "https://steemit.com" + content['result']['url']
     info['title'] = content['result']['root_title']
     info['author'] = content['result']['author']
+    info['votes'] = content['result']['active_votes'].size
     image = JSON.parse(content['result']['json_metadata'])['image']
     if !image.nil?
       info['image'] = image[0]

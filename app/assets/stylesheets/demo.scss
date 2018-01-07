@@ -1,5 +1,5 @@
 html {
-  background-color: #2f4f4f;
+  background-color: #0f1f1f;
 }
 
 body {
@@ -39,17 +39,24 @@ body {
   }
 }
 
+.author {
+  display: inline-block;
+  vertical-align: top;
+  float: right;
+  margin: 15px 15px;
+  p {
+    color: #ffffff;
+  } 
+}
+
 a {
   color: #00ff00;
   text-decoration: none;
-  &:hover{
-    font-weight: bold;
-  }
 }
 
 .menu {
   border-right: 3px solid #00ff00;
-  background-color: #2f4f4f;
+  background-color: #0f1f1f;
   position: fixed;
   height: 100%;
   width: 260px;

@@ -9,6 +9,13 @@
     <div class="content">
       <p><%= link_to x['title'], x['url'] %></p>
       <p><%= x['score'] %></p>
+      <% if x['votes'] != 1 %>
+        <p><%= x['votes'] %> votes</p>
+      <% else %>
+        <p><%= x['votes'] %> vote</p>
+      <% end %>
+    </div>
+    <div class="author">
       <p><%= x['author'] %></p>
     </div>
   </div>
