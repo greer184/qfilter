@@ -21,10 +21,7 @@ task :update => :environment do
   
   end	
 
-  posts = Post.all
-  posts.order! 'created_at'
-  limit = 0
-  posts.each do |post|
+  Post.all.each do |post|
     if (1.week.ago - post.created_at) > 0
       content = api.get_content(post.author, post.permlink)
       votes = content['result']['active_votes']
@@ -37,6 +34,9 @@ task :update => :environment do
       # Find winners of curation and author rewards
       curation_winner = post.compute_score('curation', votes)
       score = post.compute_score('stake', votes)
+
+      # Reward curation winner with bonus contribution points
+      Contributor.add_contribution(curation_winner, 10)
 
       # Reward only "quality" posts, punish "bad" posts
       if (score >= 5.0)
@@ -53,3 +53,36 @@ task :update => :environment do
   end
  
 end 
+
+task :upvote => :environment do
+  api = Radiator::Api.new
+  
+  Post.all.each do |post|
+
+    # Only vote on posts after 48 hours
+    if (2.days.ago - post.created_at) > 0 and !post.upvoted
+ 
+      # Perform Calculations
+      content = api.get_content(post.author, post.permlink)
+      votes = content['result']['active_votes']
+      weight = post.compute_score('stake', votes)
+
+      # Approve Transaction
+      active_key = Permission.find_by_name('qfilter-active-key').key
+      transaction = Radiator::Transaction.new(wif: active_key)
+
+      vote = {
+        type: :vote,
+        voter: 'qfilter',
+        author: post.author,
+        permlink: post.permlink,
+        weight: ((weight * 2000.0) - 10000.0).to_i
+      }
+
+      transaction.operations << vote
+      transaction.process(true)
+
+      post.update_attribute(:upvoted, true) 
+    end
+  end
+end

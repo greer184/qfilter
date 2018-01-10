@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171211165902) do
+ActiveRecord::Schema.define(version: 20180109211316) do
 
   create_table "contributors", force: :cascade do |t|
     t.string "username"
@@ -20,11 +20,19 @@ ActiveRecord::Schema.define(version: 20171211165902) do
     t.integer "checkpoint"
   end
 
+  create_table "permissions", force: :cascade do |t|
+    t.string "name"
+    t.string "key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "author"
     t.string "permlink"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "upvoted", default: false
   end
 
 end
