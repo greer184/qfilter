@@ -18,14 +18,14 @@ namespace :utility do
 
       # Calculate allocated amount
       proportion = (con.point - con.checkpoint) / total.to_f
-      money = (proportion * total_cash).round(half: :down, 3)
+      money = proportion * total_cash
 
       transaction = Radiator::Transaction.new(wif: active_key)
       transfer = {
         type: :transfer,
         from: 'qfilter',
         to: con.name,
-        amount: money.to_s + ' SBD',
+        amount: money.round(3).to_s + ' SBD',
         memo: 'qfilter monthly distribution reward'
       }
  
