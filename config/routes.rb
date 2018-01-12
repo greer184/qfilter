@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get '/stake',          to: 'demo#stake'
   get '/reputation',     to: 'demo#reputation'
-  get '/contribution',   to: 'demo#contribution'
+  get '/participation',   to: 'demo#participation'
 
   get 'contributors/show'
 end

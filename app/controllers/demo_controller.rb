@@ -10,7 +10,7 @@ class DemoController < ApplicationController
     render 'index'
   end
 
-  def contribution
+  def participation
     @feed = aggregate_posts('contribution')
     render 'index'
   end
