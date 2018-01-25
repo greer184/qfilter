@@ -26,7 +26,7 @@ class Post < ApplicationRecord
  
     # Working variables 
     total = 0   
-    count = 1
+    count = 0
     weights = 1000.0
     volatility = 0
     alpha = 0.1
@@ -35,7 +35,7 @@ class Post < ApplicationRecord
     votes.sort_by{ |x| x['time'] }.each do |y|
       weight = 0.0
       case algorithm
-      when 'stake'
+      when 'stake', 'curation'
         weight = y['weight'].to_f
       when 'reputation'
         weight = y['reputation'].to_f
@@ -46,11 +46,6 @@ class Post < ApplicationRecord
             weight += con.score
           end
         end
-      when 'curation'
-        alpha = (Math.exp(-2 * count / votes.size))
-        random = SecureRandom.random_number
-        weight = y['weight'].to_f * (alpha + (1-alpha) * random)
-        count += 1
       end
 
       rating = (y['percent'] + 10000.0) / 2000
@@ -63,14 +58,18 @@ class Post < ApplicationRecord
     score = (total / weights / (volatility / 100 + 1)).round(2)
 
     if algorithm == 'curation'
-      min_difference = 100
+      min_difference = 10
       winner = ''
       votes.each do |x|
-        difference = (((x['percent'] + 10000.0) / 2000) - score)**2
-        if difference < min_difference
+        random = SecureRandom.random_number
+        beta = (votes.count - count) / votes.count
+        wager = beta * ((x['percent'] + 10000.0) / 2000) + (1 - beta) * random 
+        difference = wager - score
+        if difference < min_difference and x['voter'] != 'qfilter'
           min_difference = difference
           winner = x['voter']
         end 
+        count += 1
       end
       score = winner
     end

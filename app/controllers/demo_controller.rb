@@ -14,6 +14,14 @@ class DemoController < ApplicationController
     @feed = aggregate_posts('contribution')
     render 'index'
   end
+
+  # In Development
+  def showcase
+    api = Radiator::Api.new
+    leaders = Contributor.find_best(20)
+    names = leaders.map{ |x| x = x.username } 
+    # Work in Progress
+  end
     
   private
   def aggregate_posts(algorithm)

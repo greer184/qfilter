@@ -38,6 +38,25 @@ task :update => :environment do
       # Reward curation winner with bonus contribution points
       Contributor.add_contribution(curation_winner, 10)
 
+      # Reward curation winner with SBD
+      total_cash = api.find_account('qfilter').sbd_balance.to_f
+      money = (total_cash / Post.all.count).round(3) - 0.001 
+  
+      # Build Transaction
+      active_key = Permission.find_by_name('qfilter-active-key').key
+      transaction = Radiator::Transaction.new(wif: active_key)
+      transfer = {
+        type: :transfer,
+        from: 'qfilter',
+        to: curation_winner,
+        amount: money.to_s + ' SBD',
+        memo: 'qFilter Vote Lottery Prize'
+      }
+ 
+      # Process Transaction
+      transaction.operations << transfer
+      transaction.process(true)
+
       # Reward only "quality" posts, punish "bad" posts
       if (score >= 5.0)
         score = (score - 5.0)**2
