@@ -28,8 +28,7 @@ class Post < ApplicationRecord
     total = 0   
     count = 0
     weights = 1000.0
-    volatility = 0
-    alpha = 0.1
+    variance = 0
 
     # Go through votes
     votes.sort_by{ |x| x['time'] }.each do |y|
@@ -48,14 +47,23 @@ class Post < ApplicationRecord
         end
       end
 
+      # Weighted Average
       rating = (y['percent'] + 10000.0) / 2000
       total += weight * rating
       weights += weight
-      volatility = alpha * (rating-total/weights)**2 + volatility * (1-alpha)
 
     end
 
-    score = (total / weights / (volatility / 100 + 1)).round(2)
+    average = total / weights
+
+    # Calculate Variance
+    votes.each do |x|
+      variance += (average - ((x['percent'] + 10000.0) / 2000))**2
+    end
+    variance /= votes.count.to_f
+
+    # Final Score
+    score = (average / ((variance / 10) + 1)).round(2) 
 
     if algorithm == 'curation'
       min_difference = 10
