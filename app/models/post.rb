@@ -63,7 +63,7 @@ class Post < ApplicationRecord
     variance /= votes.count.to_f
 
     # Final Score
-    score = (average / ((variance / 10) + 1)).round(2) 
+    score = (average / ((variance / 20) + 1)).round(2) 
 
     if algorithm == 'curation'
       min_difference = 10
