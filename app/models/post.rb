@@ -25,11 +25,12 @@ class Post < ApplicationRecord
   def compute_score(algorithm, votes)
  
     # Working variables 
-    total = 0   
-    count = 0
+    total = 0.0   
+    variance = 0.0
     weights = 1000.0
-    variance = 0
-    penalty = 50
+    count = 0
+    penalty = 25
+    negative = false
 
     # Go through votes
     votes.sort_by{ |x| x['time'] }.each do |y|
@@ -37,6 +38,11 @@ class Post < ApplicationRecord
       case algorithm
       when 'stake', 'curation'
         weight = y['weight'].to_f
+      when 'vote'
+        weight = y['weight'].to_f
+        if (y['percent'] < 0.0)
+          negative = true
+        end
       when 'reputation'
         weight = y['reputation'].to_f
       when 'contribution'
@@ -52,7 +58,7 @@ class Post < ApplicationRecord
       rating = (y['percent'] + 10000.0) / 2000
       total += weight * rating
       weights += weight
-
+ 
     end
 
     average = total / weights
@@ -81,6 +87,12 @@ class Post < ApplicationRecord
         count += 1
       end
       score = winner
+    end
+
+    # If no flags, but score below 5.0
+    # lower bound = 5.0
+    if score < 5.0 and !negative and algorithm == 'vote'
+      score = 5.0
     end
 
     score

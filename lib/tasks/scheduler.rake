@@ -84,7 +84,7 @@ task :upvote => :environment do
       # Perform Calculations
       content = api.get_content(post.author, post.permlink)
       votes = content['result']['active_votes']
-      weight = post.compute_score('stake', votes)
+      weight = post.compute_score('vote', votes)
 
       # Approve Transaction
       active_key = Permission.find_by_name('qfilter-active-key').key
