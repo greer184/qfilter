@@ -32,6 +32,9 @@ class Post < ApplicationRecord
     penalty = 25
     negative = false
 
+    # Make sure votes exist, otherwise return 0.
+    return 0.0 if votes.count == 0
+
     # Go through votes
     votes.sort_by{ |x| x['time'] }.each do |y|
       weight = 0.0

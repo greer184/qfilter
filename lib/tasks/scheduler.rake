@@ -62,7 +62,8 @@ task :update => :environment do
         score = (score - 5.0)**2
         Contributor.add_contribution(post.author, score.to_i)
       else
-        Contributor.add_contribution(post.author, -25)
+        score = -1.0 * (score - 5.0)**2
+        Contributor.add_contribution(post.author, score.to_i)
       end
 
       # Remove post reference from database
