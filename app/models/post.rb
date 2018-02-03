@@ -94,8 +94,10 @@ class Post < ApplicationRecord
 
     # If no flags, but score below 5.0
     # lower bound = 5.0
-    if score < 5.0 and !negative and algorithm == 'vote'
-      score = 5.0
+    if !negative and algorithm == 'vote'
+      if score < 5.0
+        score = 5.0
+      end
     end
 
     score
