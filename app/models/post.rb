@@ -39,20 +39,18 @@ class Post < ApplicationRecord
     votes.sort_by{ |x| x['time'] }.each do |y|
       weight = 0.0
       case algorithm
-      when 'stake', 'curation'
+      when 'stake'
         weight = y['weight'].to_f
-      when 'vote'
-        weight = y['weight'].to_f
-        if (y['percent'] < 0.0)
-          negative = true
-        end
       when 'reputation'
         weight = y['reputation'].to_f
-      when 'contribution'
+      when 'contribution', 'curation', 'vote'
         con = Contributor.find_by_username(y['voter'])
         if !con.nil?
           if con.score > 0
-            weight += con.score
+            weight += con.weight
+            if (y['percent'] < 0.0 and algorithm == 'vote')
+              negative = true
+            end
           end
         end
       end

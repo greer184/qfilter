@@ -8,9 +8,9 @@ namespace :develop do
       # Get specific information
       permlink = x[1]['permlink']
       author = x[1]['author']
-
+ 
       # Enter author into the database if not there
-      Contributor.add_contribution(author, 0)
+      Contributor.add_contributor(author)
 
       # Only store new posts where author contributes to ecosystem
       if Contributor.find_by_username(author).score >= 0 
@@ -26,33 +26,39 @@ namespace :develop do
       if (1.week.ago - post.created_at) > 0
         content = api.get_content(post.author, post.permlink)
         votes = content['result']['active_votes']
-
-        # Added to contribution score of voters
-        votes.each do |x|
-          Contributor.add_contribution(x['voter'], 1)
-        end
-        print "reached"
       
         # Find winners of curation and author rewards
         curation_winner = post.compute_score('curation', votes)
-        score = post.compute_score('stake', votes)
-
-        # Reward curation winner with bonus contribution points
-        Contributor.add_contribution(curation_winner, 10)
+        score = post.compute_score('contribution', votes)
 
         # Reward curation winner with SBD
         total_cash = api.find_account('qfilter').sbd_balance.to_f
         money = (total_cash / Post.all.count).round(3) - 0.001 
         print money
 
-        # Reward only "quality" posts, punish "bad" posts
-        if (score >= 5.0)
-          score = (score - 5.0)**2
-          Contributor.add_contribution(post.author, score.to_i)
-        else
-          score = -1.0 * (score - 5.0)**2
-          Contributor.add_contribution(post.author, score.to_i)
+        # Find total allocation for this post
+        allocation = Contributor.all.count * 1000.0 / Post.all.count
+
+        # Add to contribution score of voters
+        share = allocation * 0.5 / votes.size
+	print votes.size
+        votes.each do |x|
+	  Contributor.add_contributor(x['voter'])
+          con = Contributor.find_by_username(x['voter'])
+          con.update_attribute(:weight, con.weight + share)
         end
+
+        # Reward curation winner with bonus contribution points
+        curator = Contributor.find_by_username(curation_winner)
+        curator.update_attribute(:weight, curator.weight + allocation * 0.1)
+
+        # Reward only "quality" posts, punish "bad" posts
+        quality_share = ((score - 5.0) / 5.0) * 0.4 * allocation
+        author = Contributor.find_by_username(post.author)
+        author.update_attribute(:weight, author.weight + quality_share)
+
+        # Normalize
+        Contributor.normalize()
 
         # Remove post reference from database
         post.destroy 

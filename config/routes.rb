@@ -1,11 +1,12 @@
 Rails.application.routes.draw do
   
-  root 'demo#stake'
+  root 'demo#participation'
 
   get '/stake',          to: 'demo#stake'
   get '/reputation',     to: 'demo#reputation'
   get '/participation',  to: 'demo#participation'
   get '/showcase',       to: 'demo#showcase' 
 
-  get 'contributors/show'
+  get 'participants',      to: 'contributors#index'
+  get 'participants/:id',  to: 'contributors#show'
 end

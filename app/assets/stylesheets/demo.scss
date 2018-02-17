@@ -9,42 +9,48 @@ body {
 .header {
   h1, h6 {
     color: #ffffff;
-    margin-left: 260px;
+    margin-left: 20%;
   }
   border-bottom: 3px solid #00ff00;
   text-align: center;
 }
 
 .post {
+  height: 160px;
   border-bottom: 1px solid #00ff00;
-  height: 150px;
 }
 
 .image {
+  width: 20%;
+  height: 160px;
   display: inline-block;
-  margin: 15px;
-  margin-left: 305px;
+  vertical-align: top;
+  margin-left: 25%;
   img { 
-    height: 120px; 
-    width: 200px;  
+    padding-top: 20px;
+    height: 75%;
+    width: 80%;
   }
 }
 
 .content {
+  width: 40%;
+  height: 160px;
   display: inline-block;
-  vertical-align: top;
-  margin: 15px 0px 0px 30px;
+  vertical-align: bottom;
+  padding-right: 8%;
   p { 
+    overflow: hidden;
     color: #ffffff;
   }
 }
 
-.author {
+.score {
+  width: 10px;
+  height: 160px;
   display: inline-block;
-  vertical-align: top;
-  float: right;
-  margin: 15px 15px;
   p {
+    padding-left: 50%;
     color: #ffffff;
   } 
 }
@@ -59,7 +65,7 @@ a {
   background-color: #0f1f1f;
   position: fixed;
   height: 100%;
-  width: 260px;
+  width: 20%;
   bottom: 0;
   h3 {
     text-align: center;

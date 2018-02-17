@@ -1,12 +1,8 @@
 <div class="interior">
-  <h3>Top 20 Monthly QFilter Participants</h3>
-  <% count = 1 %>
-  <% Contributor.find_best(20).each do |con| %>
-    <p><%= count %>. 
-       <%= link_to con.username, "https://steemit.com/@" + con.username %>: 
-       <%= con.score - con.checkpoint %>
-    </p>
-    <% count += 1 %>
+  <% if !@contributor.nil? %> 
+  <h3><%= @contributor.username %></h3>
+  <p>Weight: <%= @contributor.weight.round(2) %></p>
+  <% else %>
+  <p>This username is not found in the q-filter network</p>
   <% end %>
 </div>
-

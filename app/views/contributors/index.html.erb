@@ -1,0 +1,12 @@
+<div class="interior">
+  <h3>Top QFilter Participant Weights</h3>
+  <% count = 1 %>
+  <% Contributor.find_best(50).each do |con| %>
+    <p><%= count %>. 
+       <%= link_to con.username, "https://steemit.com/@" + con.username %>: 
+       <%= con.weight.round(3) %>
+    </p>
+    <% count += 1 %>
+  <% end %>
+</div>
+
