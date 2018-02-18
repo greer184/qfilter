@@ -37,6 +37,7 @@ class Post < ApplicationRecord
 
     # Go through votes
     votes.sort_by{ |x| x['time'] }.each do |y|
+
       weight = 0.0
       case algorithm
       when 'stake'
@@ -44,15 +45,19 @@ class Post < ApplicationRecord
       when 'reputation'
         weight = y['reputation'].to_f
       when 'contribution', 'curation', 'vote'
+        
+        # Add voter to database if not there
+        Contributor.add_contributor(y['voter'])
+
+        # Select weight from voter
         con = Contributor.find_by_username(y['voter'])
-        if !con.nil?
-          if con.score > 0
-            weight += con.weight
-            if (y['percent'] < 0.0 and algorithm == 'vote')
-              negative = true
-            end
+        if con.weight > 0
+          weight += con.weight
+          if (y['percent'] < 0.0 and algorithm == 'vote')
+            negative = true
           end
         end
+          
       end
 
       # Weighted Average
