@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   root 'demo#participation'
 
   get '/stake',          to: 'demo#stake'
@@ -9,4 +9,6 @@ Rails.application.routes.draw do
 
   get 'participants',      to: 'contributors#index'
   get 'participants/:id',  to: 'contributors#show'
+
+  get 'cat/:id',    to: 'categories#show'
 end

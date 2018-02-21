@@ -7,6 +7,7 @@ task :update => :environment do
     # Get specific information
     permlink = x[1]['permlink']
     author = x[1]['author']
+    cat = x[1]['url'].split("/")[1]
 
     # Enter author into the database if not there
     Contributor.add_contributor(author)
@@ -14,7 +15,7 @@ task :update => :environment do
     # Only store new posts where author contributes to ecosystem
     if Contributor.find_by_username(author).weight >= 0 
       if Post.where(permlink: permlink).size == 0 
-        post = Post.create(author: author, permlink: permlink)
+        post = Post.create(author: author, permlink: permlink, category: cat)
         post.save
       end
     end  
@@ -28,7 +29,7 @@ task :update => :environment do
       
       # Find winners of curation and author rewards
       curation_winner = post.compute_score('curation', votes)
-      score = post.compute_score('participant', votes)
+      score = post.compute_score('contribution', votes)
 
       # Reward curation winner with SBD
       total_cash = api.find_account('qfilter').sbd_balance.to_f

@@ -1,0 +1,22 @@
+<% @feed = @feed.sort_by{ |i| i['score'] }.reverse %>
+<% @feed.each do |x| %>
+  <div class="post">
+    <div class="image">
+      <% if !x['image'].nil? %>
+        <img src="<%= x['image'] %>">
+      <% end %>
+    </div>
+    <div class="content">
+      <p><%= link_to x['title'], x['url'] %></p>
+      <p><%= x['author'] %></p>
+      <% if x['votes'] != 1 %>
+        <p><%= x['votes'] %> votes</p>
+      <% else %>
+        <p><%= x['votes'] %> vote</p>
+      <% end %>
+    </div>
+    <div class="score">
+      <p><%= x['score'] %></p>
+    </div>
+  </div>
+<% end %>

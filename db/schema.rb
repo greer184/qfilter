@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180204020032) do
+ActiveRecord::Schema.define(version: 20180220190705) do
 
   create_table "contributors", force: :cascade do |t|
     t.string "username"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20180204020032) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "upvoted", default: false
+    t.string "category"
   end
 
 end

@@ -8,6 +8,7 @@ namespace :develop do
       # Get specific information
       permlink = x[1]['permlink']
       author = x[1]['author']
+      cat = x[1]['url'].split("/")[1]
  
       # Enter author into the database if not there
       Contributor.add_contributor(author)
@@ -15,7 +16,7 @@ namespace :develop do
       # Only store new posts where author contributes to ecosystem
       if Contributor.find_by_username(author).score >= 0 
         if Post.where(permlink: permlink).size == 0 
-          post = Post.create(author: author, permlink: permlink)
+          post = Post.create(author: author, permlink: permlink, category: cat)
           post.save
         end
       end  
@@ -80,4 +81,5 @@ namespace :develop do
       end
     end
   end
+
 end
