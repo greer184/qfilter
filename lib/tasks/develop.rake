@@ -35,14 +35,12 @@ namespace :develop do
         # Reward curation winner with SBD
         total_cash = api.find_account('qfilter').sbd_balance.to_f
         money = (total_cash / Post.all.count).round(3) - 0.001 
-        print money
 
         # Find total allocation for this post
         allocation = Contributor.all.count * 1000.0 / Post.all.count
 
         # Add to contribution score of voters
         share = allocation * 0.5 / votes.size
-	print votes.size
         votes.each do |x|
 	  Contributor.add_contributor(x['voter'])
           con = Contributor.find_by_username(x['voter'])

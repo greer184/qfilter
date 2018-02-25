@@ -17,9 +17,9 @@ class Contributor < ApplicationRecord
   end
 
   def Contributor.normalize()
-    factor = (Contributor.all.count * 1000.0) / Contributor.sum(:weight) 
+    factor = Contributor.all.count * 1000.0 / Contributor.sum(:weight).round(10) 
     Contributor.all.each do |con|
-      con.update_attribute(:weight, con.weight * factor)
+      con.update_attribute(:weight, (con.weight * factor).round(10))
     end
   end 
 
