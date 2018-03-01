@@ -1,4 +1,9 @@
 <% @feed = @feed.sort_by{ |i| i['score'] }.reverse %>
+<% if @feed.count == 0 %>
+  <div class="interior">
+    <h3>This category is empty</h3>
+  </div>
+<% end %>
 <% @feed.each do |x| %>
   <div class="post">
     <div class="image">
