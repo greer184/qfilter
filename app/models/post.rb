@@ -1,5 +1,25 @@
 class Post < ApplicationRecord
 
+  def self.aggregate_posts(algorithm, category = nil)
+    feed = []
+    api = Radiator::Api.new
+
+    # Build feeds, checking categories option
+    if category.nil?
+      Post.all.each do |post|
+        feed.append(post.build_post(algorithm, api))
+      end
+    else
+      Post.all.each do |post|
+        if (post.category == category)
+          feed.append(post.build_post(algorithm, api))
+        end
+      end
+    end
+
+    feed
+  end
+
   def build_post(algorithm, api)
 
     # Obtain Content For Specific Post
@@ -105,4 +125,5 @@ class Post < ApplicationRecord
 
     score
   end
+  
 end
