@@ -125,5 +125,24 @@ class Post < ApplicationRecord
 
     score
   end
+
+
+  def self.top_categories(number)
+    cats = Hash.new
+
+    # Collect counts for post in each category
+    Post.all.each do |post|
+      if cats[post.category].nil?
+        cats[post.category] = 1
+      else
+        cats[post.category] += 1
+      end
+    end
+
+    # Only return the largest categories
+    cat_array = cats.to_a.sort_by{ |x| x[1] }.reverse.map{ |x| x[0] }
+    cat_array[0..number]
+    
+  end
   
 end
