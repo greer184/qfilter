@@ -6,4 +6,21 @@ namespace :utility do
     end
   end
 
+  task :upgrade_posts => :environment do
+    api = Radiator::Api.new
+    Post.all.each do |post|
+      content = api.get_content(post.author, post.permlink)
+      url = "https://steemit.com" + content['result']['url']
+      title = content['result']['root_title']
+      votes = 0
+      parse = JSON.parse(content['result']['json_metadata'])['image']
+      if !parse.nil?
+         image = parse[0]
+      else 
+         image = "empty"
+      end
+      post.update_columns(url: url, title: title, votes: votes, image: image)
+    end
+  end
+
 end
