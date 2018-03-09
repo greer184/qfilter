@@ -37,7 +37,14 @@ class Post < ApplicationRecord
     end
 
     # Score Calculation
-    info['score'] = compute_score(algorithm, content['result']['active_votes'])
+    votes = content['result']['active_votes']
+    if votes.size != self.votes && algorithm == 'contribution'
+      info['score'] = compute_score(algorithm, votes)
+      post = Post.find_by_permlink(self.permlink)
+      post.update_columns(:votes => votes.size, :score => info['score'])
+    else
+      info['score'] = compute_score(algorithm, votes)
+    end
 
     info
   end
