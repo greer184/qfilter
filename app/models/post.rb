@@ -1,5 +1,25 @@
 class Post < ApplicationRecord
 
+  def self.aggregate_posts(algorithm, category = nil)
+    feed = []
+    api = Radiator::Api.new
+
+    # Build feeds, checking categories option
+    if category.nil?
+      Post.all.each do |post|
+        feed.append(post.build_post(algorithm, api))
+      end
+    else
+      Post.all.each do |post|
+        if (post.category == category)
+          feed.append(post.build_post(algorithm, api))
+        end
+      end
+    end
+
+    feed
+  end
+
   def build_post(algorithm, api)
 
     # Obtain Content For Specific Post
@@ -17,7 +37,14 @@ class Post < ApplicationRecord
     end
 
     # Score Calculation
-    info['score'] = compute_score(algorithm, content['result']['active_votes'])
+    votes = content['result']['active_votes']
+    if votes.size != self.votes && algorithm == 'contribution'
+      info['score'] = compute_score(algorithm, votes)
+      post = Post.find_by_permlink(self.permlink)
+      post.update_columns(:votes => votes.size, :score => info['score'])
+    else
+      info['score'] = compute_score(algorithm, votes)
+    end
 
     info
   end
@@ -105,4 +132,24 @@ class Post < ApplicationRecord
 
     score
   end
+
+
+  def self.top_categories(number)
+    cats = Hash.new
+
+    # Collect counts for post in each category
+    Post.all.each do |post|
+      if cats[post.category].nil?
+        cats[post.category] = 1
+      else
+        cats[post.category] += 1
+      end
+    end
+
+    # Only return the largest categories
+    cat_array = cats.to_a.sort_by{ |x| x[1] }.reverse.map{ |x| x[0] }
+    cat_array[0..number]
+    
+  end
+  
 end
