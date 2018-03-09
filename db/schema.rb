@@ -37,6 +37,9 @@ ActiveRecord::Schema.define(version: 20180309192652) do
     t.string "category"
     t.integer "votes"
     t.decimal "score"
+    t.string "url"
+    t.string "image"
+    t.string "title"
   end
 
 end
