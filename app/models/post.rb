@@ -2,17 +2,14 @@ class Post < ApplicationRecord
 
   def self.aggregate_posts(algorithm, category = nil)
     feed = []
-    api = Radiator::Api.new
 
     # Build feeds, checking categories option
     if category.nil?
-      Post.all.each do |post|
-        feed.append(post.build_post(algorithm, api))
-      end
+      feed = Post.all
     else
       Post.all.each do |post|
         if (post.category == category)
-          feed.append(post.build_post(algorithm, api))
+          feed.append(post)
         end
       end
     end
@@ -20,33 +17,19 @@ class Post < ApplicationRecord
     feed
   end
 
-  def build_post(algorithm, api)
+  def update_score(api)
 
-    # Obtain Content For Specific Post
+    # Obtain Content For Calculation
     content = api.get_content(self.author, self.permlink)
-    info = Hash.new
-
-    # Display Information
-    info['url'] = "https://steemit.com" + content['result']['url']
-    info['title'] = content['result']['root_title']
-    info['author'] = content['result']['author']
-    info['votes'] = content['result']['active_votes'].size
-    image = JSON.parse(content['result']['json_metadata'])['image']
-    if !image.nil?
-      info['image'] = image[0]
-    end
-
-    # Score Calculation
     votes = content['result']['active_votes']
-    if votes.size != self.votes && algorithm == 'contribution'
-      info['score'] = compute_score(algorithm, votes)
+
+    # Score Calculation (if needed)
+    if votes.size != self.votes
+      score = compute_score('contribution', votes)
       post = Post.find_by_permlink(self.permlink)
-      post.update_columns(:votes => votes.size, :score => info['score'])
-    else
-      info['score'] = compute_score(algorithm, votes)
+      post.update_columns(:votes => votes.size, :score => score)
     end
 
-    info
   end
 
   def compute_score(algorithm, votes)
@@ -148,7 +131,7 @@ class Post < ApplicationRecord
 
     # Only return the largest categories
     cat_array = cats.to_a.sort_by{ |x| x[1] }.reverse.map{ |x| x[0] }
-    cat_array[0..number]
+    cat_array[0...number]
     
   end
   

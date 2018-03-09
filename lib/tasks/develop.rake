@@ -7,20 +7,32 @@ namespace :develop do
    
       # Get specific information
       permlink = x[1]['permlink']
-      author = x[1]['author']
-      cat = x[1]['url'].split("/")[1]
- 
-      # Enter author into the database if not there
-      Contributor.add_contributor(author)
 
-      # Only store new posts where author contributes to ecosystem
-      if Contributor.find_by_username(author).score >= 0 
-        if Post.where(permlink: permlink).size == 0 
-          post = Post.create(author: author, permlink: permlink, category: cat)
-          post.save
+      # Only grab post information if post is new
+      if Post.where(permlink: permlink).size == 0
+        author = x[1]['author']
+        cat = x[1]['url'].split("/")[1]
+        url = "https://steemit.com" + x[1]['url']
+        votes = x[1]['active_votes'].size
+	title = x[1]['root_title']
+        parse = JSON.parse(x[1]['json_metadata'])['image']
+        if !parse.nil?
+      	  image = parse[0]
+        else
+          image = "empty"
         end
+ 
+        # Enter author into the database if not there
+        Contributor.add_contributor(author)
+
+        # Only store new posts where author contributes to ecosystem
+        if Contributor.find_by_username(author).weight >= 0.0  
+          post = Post.create(author: author, permlink: permlink, category: cat,
+			     votes: votes, score: 0.0, url: url, image: image)
+          post.save
+	  post.update_score(api)
+        end  
       end  
-  
     end	
 
     Post.all.each do |post|
@@ -77,6 +89,13 @@ namespace :develop do
         post.update_attribute(:upvoted, true) 
         print "works"
       end
+    end
+  end
+
+  task :calculate => :environment do
+    api = Radiator::Api.new
+    Post.all.each do |post|
+      post.update_score(api)
     end
   end
 
