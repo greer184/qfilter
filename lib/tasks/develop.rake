@@ -13,7 +13,7 @@ namespace :develop do
         author = x[1]['author']
         cat = x[1]['url'].split("/")[1]
         url = "https://steemit.com" + x[1]['url']
-        votes = x[1]['active_votes'].size
+        votes = 0
 	title = x[1]['root_title']
         parse = JSON.parse(x[1]['json_metadata'])['image']
         if !parse.nil?
