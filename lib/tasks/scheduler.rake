@@ -125,11 +125,11 @@ task :upvote => :environment do
     end
   end
 
-  task :calculate => :environment do
-    api = Radiator::Api.new
-    Post.all.each do |post|
-      post.update_score(api)
-    end
-  end
+end
 
+task :calculate => :environment do
+  api = Radiator::Api.new
+  Post.all.each do |post|
+    post.update_score(api)
+  end
 end
