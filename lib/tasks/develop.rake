@@ -28,7 +28,8 @@ namespace :develop do
         # Only store new posts where author contributes to ecosystem
         if Contributor.find_by_username(author).weight >= 0.0  
           post = Post.create(author: author, permlink: permlink, category: cat,
-			     votes: votes, score: 0.0, url: url, image: image)
+			     votes: votes, score: 0.0, url: url, image: image, 
+			     title: title)
           post.save
 	  post.update_score(api)
         end  
