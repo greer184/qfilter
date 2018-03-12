@@ -75,8 +75,8 @@ task :update => :environment do
       end
 
       # Reward curation winner with bonus contribution points
-      if (!curation_winner.nil?)
-        curator = Contributor.find_by_username(curation_winner)
+      curator = Contributor.find_by_username(curation_winner)
+      if (!curator.nil?) 
       	curator.update_attribute(:weight, curator.weight + allocation * 0.1)
       end
 
