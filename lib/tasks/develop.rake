@@ -61,8 +61,10 @@ namespace :develop do
         end
 
         # Reward curation winner with bonus contribution points
-        curator = Contributor.find_by_username(curation_winner)
-        curator.update_attribute(:weight, curator.weight + allocation * 0.1)
+        if (!curation_winner.nil?)
+          curator = Contributor.find_by_username(curation_winner)
+          curator.update_attribute(:weight, curator.weight + allocation * 0.1)
+	end
 
         # Reward only "quality" posts, punish "bad" posts
         quality_share = ((score - 5.0) / 5.0) * 0.4 * allocation
