@@ -37,7 +37,7 @@ class Post < ApplicationRecord
     # Working variables 
     total = 0.0   
     variance = 0.0
-    weights = 1000.0
+    weights = 5000.0
     count = 0
     penalty = 25
     negative = false
@@ -92,7 +92,7 @@ class Post < ApplicationRecord
       min_difference = 10
       winner = ''
       votes.each do |x|
-        random = SecureRandom.random_number
+        random = SecureRandom.random_number * 10.0
         beta = (votes.count - count) / votes.count
         wager = beta * ((x['percent'] + 10000.0) / 2000) + (1 - beta) * random 
         difference = wager - score
